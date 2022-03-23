@@ -1,0 +1,59 @@
+#!/bin/bash
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ "$1" != "setup" ]]; then
+  echo "Syntax: carbonio-files-db <setup> to automatically setup the service"
+  exit 1;
+fi
+
+# Decrypt the bootstrap token, asking the password to the sys admin
+# --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
+# to avoid re-asking for the password multiple times
+echo -n "Insert the cluster credential password: "
+export CONSUL_HTTP_TOKEN=$(service-discover bootstrap-token --setup)
+EXIT_CODE="$?"
+echo ""
+if [[ "${EXIT_CODE}" != "0" ]]; then
+  echo "cannot access to bootstrap token"
+  exit 1;
+fi
+# Limit secret visibility as much as possible
+export -n SETUP_CONSUL_TOKEN
+
+POLICY_NAME='carbonio-files-db-policy'
+POLICY_DESCRIPTION='Carbonio Files database service policy for config generation and for sidecar proxy'
+
+# Create or update policy for the specific service (this will be shared across cluster)
+consul acl policy create -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/files-db/service-discover/policies.json >/dev/null 2>&1
+if [[ "$?" != "0" ]]; then
+    consul acl policy update -no-merge -name "${POLICY_NAME}" -description "${POLICY_DESCRIPTION}" -rules @/etc/carbonio/files-db/service-discover/policies.json
+    if [[ "$?" != "0" ]]; then
+      echo "Setup failed: Cannot update policy for ${POLICY_NAME}"
+      exit 1
+    fi
+fi
+
+# Declare the service as tcp
+consul config write /etc/carbonio/files-db/service-discover/service-protocol.json
+
+# Allow other services to contact this service
+consul config write /etc/carbonio/files-db/service-discover/intentions.json
+
+if [[ ! -f "/etc/carbonio/files-db/service-discover/token" ]]; then
+    # Create the token
+    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-files-db/$(hostname -A)" |
+      jq -r '.SecretID' > /etc/carbonio/files-db/service-discover/token;
+    chown carbonio-files-db:carbonio-files-db /etc/carbonio/files-db/service-discover/token
+    chmod 0600 /etc/carbonio/files-db/service-discover/token
+fi
+
+consul reload
+
+# Limit token visibility as much as possible
+export -n CONSUL_HTTP_TOKEN
+
+systemctl restart carbonio-files-db-sidecar.service

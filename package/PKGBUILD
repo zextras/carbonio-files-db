@@ -1,0 +1,95 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-files-db"
+pkgver="0.1.2"
+pkgrel="1"
+pkgdesc="Carbonio Files DB sidecar"
+pkgdesclong=(
+  "Carbonio Files DB sidecar"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+license=("spdx:AGPL-3.0-only")
+depends=(
+  "service-discover"
+  "pending-setups"
+  "carbonio-core"
+  "postgresql-client"
+)
+
+sources=(
+  "carbonio-files-db"
+  "carbonio-files-db.hcl"
+  "carbonio-files-db.sh"
+  "carbonio-files-db-bootstrap"
+  "carbonio-files-db-sidecar.service"
+  "intentions.json"
+  "policies.json"
+  "service-protocol.json"
+)
+
+hashsums=(
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+  "skip"
+)
+backup=(
+    "/etc/zextras/service-discover/carbonio-files-db.hcl"
+)
+
+package() {
+  cd "${srcdir}"
+  install -Dm 755 carbonio-files-db "${pkgdir}/usr/bin/carbonio-files-db"
+  install -Dm 644 carbonio-files-db-sidecar.service "${pkgdir}/lib/systemd/system/carbonio-files-db-sidecar.service"
+  install -Dm 644 carbonio-files-db.hcl "${pkgdir}/etc/zextras/service-discover/carbonio-files-db.hcl"
+  install -Dm 755 carbonio-files-db-bootstrap "${pkgdir}/usr/bin/carbonio-files-db-bootstrap"
+  install -Dm 644 carbonio-files-db.sh "${pkgdir}/etc/zextras/pending-setups.d/carbonio-files-db-setup.sh"
+  install -Dm 644 intentions.json "${pkgdir}/etc/carbonio/files-db/service-discover/intentions.json"
+  install -Dm 644 policies.json "${pkgdir}/etc/carbonio/files-db/service-discover/policies.json"
+  install -Dm 644 service-protocol.json "${pkgdir}/etc/carbonio/files-db/service-discover/service-protocol.json"
+}
+
+postinst() {
+  getent group 'carbonio-files-db' >/dev/null ||
+    groupadd -r 'carbonio-files-db'
+  getent passwd 'carbonio-files-db' >/dev/null ||
+    useradd -r -M -g 'carbonio-files-db' -s /sbin/nologin 'carbonio-files-db'
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+    systemctl enable carbonio-files-db-sidecar.service >/dev/null 2>&1 || :
+  fi
+
+  echo "======================================================"
+  echo "Carbonio Files DB installed successfully!"
+  echo "You must run pending-setups to configure it correctly."
+  echo "======================================================"
+}
+
+
+prerm() {
+  if [ -d /run/systemd/system ]; then
+    systemctl --no-reload disable carbonio-files-db-sidecar.service >/dev/null 2>&1 || :
+    systemctl stop carbonio-files-db-sidecar.service >/dev/null 2>&1 || :
+  fi
+}
+
+postrm() {
+  rm -Rf /etc/carbonio/files-db/
+  rm -f /etc/zextras/pending-setups.d/carbonio-files-db.sh
+  rm -f /etc/zextras/pending-setups.d/done/carbonio-files-db.sh
+
+  if [ -d /run/systemd/system ]; then
+    systemctl daemon-reload >/dev/null 2>&1 || :
+  fi
+}

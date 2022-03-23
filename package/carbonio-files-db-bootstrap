@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# This script just create credentials, write them in consul and initialize an empty schema
+
+MAIN_SERVICE_NAME="carbonio-files"
+DB_SERVICE_NAME="carbonio-files-db"
+DATABASE_NAME="${DB_SERVICE_NAME}"
+DATABASE_USERNAME="${DB_SERVICE_NAME}"
+DATABASE_PASSWORD="" #defined later
+CONSUL_TOKEN_PATH="/etc/carbonio/files-db/service-discover/token"
+
+function syntax() {
+    echo "Syntax: [PGPASSWORD=password] $0 username [host] [port]"
+    exit 1
+}
+
+set -e
+
+if [[ $(id -u) -ne 0 ]]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+if [[ -z "$1" ]]; then
+  syntax;
+fi
+
+NOT_ASK_FOR_PGPASSWORD='-w'
+if [[ -z "${PGPASSWORD}" ]]; then
+  NOT_ASK_FOR_PGPASSWORD=''
+fi
+
+ROOT_DB_USERNAME="$1"
+POSTGRES_HOST=$2
+POSTGRES_PORT=$3
+
+if [ -z "${POSTGRES_HOST}" ]; then
+  POSTGRES_HOST="localhost";
+fi
+
+if [ -z "${POSTGRES_PORT}" ]; then
+  POSTGRES_PORT="5432";
+fi
+
+echo "Database: $POSTGRES_HOST:$POSTGRES_PORT user ${ROOT_DB_USERNAME}"
+
+set +e
+CURRENT_VERSION=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" ${NOT_ASK_FOR_PGPASSWORD} "${DATABASE_NAME}" -tAq 2>/dev/null<<EOF
+SELECT version FROM DB_INFO LIMIT 1;
+EOF
+)
+# shellcheck disable=SC2181
+if [ "$?" == "0" ]; then
+  echo "Current version is: ${CURRENT_VERSION}."
+  echo "Database already initialized! quitting"
+  exit 0;
+fi
+
+set -e
+
+consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-name" "${DATABASE_NAME}"
+consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-username" "${DATABASE_USERNAME}"
+# avoid passing the password as argument, always as ENV
+openssl rand -hex 16 | tr -d '\n' | consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-password" -
+
+DATABASE_PASSWORD=$(consul kv get -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-password")
+psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" ${NOT_ASK_FOR_PGPASSWORD} <<EOF
+CREATE USER "${DATABASE_USERNAME}" WITH PASSWORD  '${DATABASE_PASSWORD}';
+CREATE DATABASE "${DATABASE_NAME}" OWNER "${DATABASE_USERNAME}";
+EOF
+
+echo "Database initialization completed."
