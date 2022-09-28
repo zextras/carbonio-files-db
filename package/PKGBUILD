@@ -4,7 +4,7 @@ targets=(
 )
 pkgname="carbonio-files-db"
 pkgver="0.1.3"
-pkgrel="1"
+pkgrel="2209261709"
 pkgdesc="Carbonio Files DB sidecar"
 pkgdesclong=(
   "Carbonio Files DB sidecar"
