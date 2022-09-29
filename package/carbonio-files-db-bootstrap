@@ -85,7 +85,7 @@ fi
 
 echo "Database: $POSTGRES_HOST:$POSTGRES_PORT user ${ROOT_DB_USERNAME}"
 
-echo "Check postgres connection: $(test_postgres_connection)"
+echo "Check postgres connection: $(check_postgres_connection)"
 
 
 # ============================
