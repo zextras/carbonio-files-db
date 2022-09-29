@@ -9,11 +9,48 @@ DATABASE_USERNAME="${DB_SERVICE_NAME}"
 DATABASE_PASSWORD="" #defined later
 CONSUL_TOKEN_PATH="/etc/carbonio/files-db/service-discover/token"
 
+
+# ==================
+# Utility functions
+# ==================
 function syntax() {
     echo "Syntax: [PGPASSWORD=password] $0 username [host] [port]"
     exit 1
 }
 
+function check_postgres_connection() {
+  set +e
+  psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}"  -tAq -c "SELECT 1;" &>/dev/null
+  PSQL_EXIT_CODE="$?"
+
+  # If the psql command exited with an error then the script stops
+  if [[ "$PSQL_EXIT_CODE" == "1" || "$PSQL_EXIT_CODE" == "2" || "$PSQL_EXIT_CODE" == "3" ]]; then
+    echo "psql: FATAL ERROR (exit code $PSQL_EXIT_CODE)."
+    echo "(see EXIT STATUS section in psql man documentation)"
+    exit 1
+  fi
+
+  echo "OK"
+  set -e
+}
+
+function save_credential_on_consul_if_not_exist() {
+  set +e
+  consul kv get -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/$1" &>/dev/null
+  CONSUL_CLI_EXIT_CODE="$?"
+
+  if [ "$CONSUL_CLI_EXIT_CODE" != "0" ]; then
+    consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/$1" "$2" &>/dev/null
+  fi
+
+  consul kv get -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/$1"
+  set -e
+}
+
+
+# ====================
+# Start of the script
+# ====================
 set -e
 
 if [[ $(id -u) -ne 0 ]]; then
@@ -25,6 +62,10 @@ if [[ -z "$1" ]]; then
   syntax;
 fi
 
+
+# ============================
+# Define postgres credentials
+# ============================
 NOT_ASK_FOR_PGPASSWORD='-w'
 if [[ -z "${PGPASSWORD}" ]]; then
   NOT_ASK_FOR_PGPASSWORD=''
@@ -44,29 +85,44 @@ fi
 
 echo "Database: $POSTGRES_HOST:$POSTGRES_PORT user ${ROOT_DB_USERNAME}"
 
+echo "Check postgres connection: $(check_postgres_connection)"
+
+
+# ============================
+# Check if the database exists
+# ============================
 set +e
-CURRENT_VERSION=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" ${NOT_ASK_FOR_PGPASSWORD} "${DATABASE_NAME}" -tAq 2>/dev/null<<EOF
+CURRENT_VERSION=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}" -tAq 2>/dev/null<<EOF
 SELECT version FROM DB_INFO LIMIT 1;
 EOF
 )
-# shellcheck disable=SC2181
-if [ "$?" == "0" ]; then
+
+PSQL_EXIT_CODE="$?"
+
+if [ "$PSQL_EXIT_CODE" == "0" ]; then
   echo "Current version is: ${CURRENT_VERSION}."
-  echo "Database already initialized! quitting"
-  exit 0;
+  echo "Database already initialized! Quitting"
+  exit 0
 fi
 
 set -e
 
-consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-name" "${DATABASE_NAME}"
-consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-username" "${DATABASE_USERNAME}"
-# avoid passing the password as argument, always as ENV
-openssl rand -hex 16 | tr -d '\n' | consul kv put -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-password" -
 
-DATABASE_PASSWORD=$(consul kv get -token-file="${CONSUL_TOKEN_PATH}" "${MAIN_SERVICE_NAME}/db-password")
-psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" ${NOT_ASK_FOR_PGPASSWORD} <<EOF
+# =================================
+# The database does not exist then:
+#  1. save credentials on consul
+#  2. create user and database
+# =================================
+
+save_credential_on_consul_if_not_exist "db-name" $DATABASE_NAME &>/dev/null
+save_credential_on_consul_if_not_exist "db-username" $DATABASE_USERNAME &>/dev/null
+DATABASE_PASSWORD=$(save_credential_on_consul_if_not_exist "db-password" "$(openssl rand -hex 16 | tr -d '\n')")
+
+psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" <<EOF
 CREATE USER "${DATABASE_USERNAME}" WITH PASSWORD  '${DATABASE_PASSWORD}';
 CREATE DATABASE "${DATABASE_NAME}" OWNER "${DATABASE_USERNAME}";
 EOF
 
-echo "Database initialization completed."
+echo "===================================================="
+echo "carbonio-files-db database initialized successfully!"
+echo "===================================================="
