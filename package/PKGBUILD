@@ -3,8 +3,8 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-files-db"
-pkgver="0.1.3"
-pkgrel="2209291209"
+pkgver="0.1.4"
+pkgrel="1"
 pkgdesc="Carbonio Files DB sidecar"
 pkgdesclong=(
   "Carbonio Files DB sidecar"
