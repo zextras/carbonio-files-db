@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: carbonio-files-db
+  title: Carbonio Files DB service
+  description: Service containing scripts to initialise the Carbonio Files database and it allows
+  the carbonio-files backend to connect to the database via the service-discover.
+  tags:
+    - bash
+    - envoy
+    - backend
+  links:
+    - url: https://github.com/Zextras/carbonio-files-db/blob/develop/README.md
+      title: README
+spec:
+  type: service
+  lifecycle: production
+  owner: shuffled-waffles
