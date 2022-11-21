@@ -4,11 +4,11 @@ SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<div style="text-align: center">
+<div align="center">
   <h1>Carbonio Files DB 🚀 </h1>
 </div>
 
-<div style="text-align: center">
+<div align="center">
 Service sidecar used by Zextras Carbonio Files to communicate with a centralized database
 
 [![Contributors][contributors-badge]][contributors]
