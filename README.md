@@ -4,11 +4,11 @@ SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
-<div align="center">
+<div style="text-align: center">
   <h1>Carbonio Files DB 🚀 </h1>
 </div>
 
-<div align="center">
+<div style="text-align: center">
 Service sidecar used by Zextras Carbonio Files to communicate with a centralized database
 
 [![Contributors][contributors-badge]][contributors]
@@ -48,15 +48,16 @@ sudo yum install carbonio-files-db
 
 ### Configuration
 
-In order to make it work with EXTERNAL databases the `carbonio-files-db.hcl` **MUST** be manually
+In order to make it work with external databases the `carbonio-files-db.hcl` **MUST** be manually
 updated by changing the address from `127.0.0.1` to the remote address. To finalize the
 configuration:
 
-- Execute `pending-setups` in order to register the service in `service-discover`
-- Initial bootstrap of the Files database:
+- Execute `pending-setups` in order to register the service in the `service-discover`
+- Bootstrap the Files database:
   ```bash
   PGPASSWORD=your-secret-password carbonio-files-db-bootstrap carbonio-files-adm 127.0.0.1
   ```
+If the bootstrap script is executed multiple times it reuses the credentials created the first time and stored in `service-discover`.
 
 ### Reading config values
 
@@ -64,10 +65,8 @@ All the necessary configurations are saved automatically in the `service-discove
 system. They can be retrieved with the following commands:
 
 - `consul kv get -token-file="/etc/carbonio/files/service-discover/token" "carbonio-files/db-name"`
-- `consul kv get -token-file="/etc/carbonio/files/service-discover/token" "
-  carbonio-files/db-username"`
-- `consul kv get -token-file="/etc/carbonio/files/service-discover/token" "
-  carbonio-files/db-password"`
+- `consul kv get -token-file="/etc/carbonio/files/service-discover/token" "carbonio-files/db-username"`
+- `consul kv get -token-file="/etc/carbonio/files/service-discover/token" "carbonio-files/db-password"`
 
 ## License 📚
 

@@ -17,7 +17,7 @@ pipeline {
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
-        timeout(time: 2, unit: 'HOURS')
+        timeout(time: 30, unit: 'MINUTES')
         skipDefaultCheckout()
     }
     stages {
@@ -87,6 +87,31 @@ pipeline {
                             }
                         }
                     }
+                }
+            }
+        }
+        stage('Upload To Develop') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                unstash 'artifacts-deb'
+                script {
+                    def server = Artifactory.server 'zextras-artifactory'
+                    def buildInfo
+                    def uploadSpec
+
+                    buildInfo = Artifactory.newBuildInfo()
+                    uploadSpec = '''{
+                        "files": [
+                            {
+                                "pattern": "artifacts/*.deb",
+                                "target": "ubuntu-devel/pool/",
+                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                            }
+                        ]
+                    }'''
+                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
                 }
             }
         }
