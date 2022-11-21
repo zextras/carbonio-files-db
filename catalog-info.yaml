@@ -7,8 +7,9 @@ kind: Component
 metadata:
   name: carbonio-files-db
   title: Carbonio Files DB service
-  description: Service containing scripts to initialise the Carbonio Files database and it allows
-  the carbonio-files backend to connect to the database via the service-discover.
+  description: |
+    Service containing scripts to initialise the Carbonio Files database and it allows
+    the carbonio-files backend to connect to the database via the service-discover.
   tags:
     - bash
     - envoy
