@@ -133,7 +133,7 @@ pipeline {
                             {
                                 "pattern": "artifacts/carbonio-files-db*.deb",
                                 "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=bionic;deb.distribution=focal;deb.component=main;deb.architecture=amd64"
+                                "props": "deb.distribution=focal;deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
@@ -175,7 +175,7 @@ pipeline {
                             {
                                 "pattern": "artifacts/carbonio-files-db*.deb",
                                 "target": "ubuntu-rc/pool/",
-                                "props": "deb.distribution=focal;;deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                                "props": "deb.distribution=focal;deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
                             }
                         ]
                     }"""
