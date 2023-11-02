@@ -1,7 +1,7 @@
 {
   "name": "carbonio-files-db",
   "description": "Carbonio Files database sidecar",
-  "build_dir": "/tmp/",
+  "buildDir": "/tmp/",
   "output": "artifacts",
   "projects": [
     {

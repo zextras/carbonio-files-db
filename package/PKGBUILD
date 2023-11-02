@@ -2,38 +2,31 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-files-db"
 pkgver="0.1.4"
 pkgrel="2"
 pkgdesc="Carbonio Files DB sidecar"
-pkgdesclong=(
-  "Carbonio Files DB sidecar"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
+arch=('x86_64')
 license=("spdx:AGPL-3.0-only")
-depends:apt=(
+depends__apt=(
   "service-discover"
   "pending-setups"
   "carbonio-core"
   "postgresql-client"
 )
 
-depends:yum=(
+depends__yum=(
   "service-discover"
   "pending-setups"
   "carbonio-core"
   "postgresql"
 )
 
-sources=(
+source=(
   "carbonio-files-db"
   "carbonio-files-db.hcl"
   "carbonio-files-db.sh"
@@ -44,18 +37,18 @@ sources=(
   "service-protocol.json"
 )
 
-hashsums=(
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
-  "skip"
+sha256sums=(
+  "SKIP"
+  "SKIP"
+  "SKIP"
+  "SKIP"
+  "SKIP"
+  "SKIP"
+  "SKIP"
+  "SKIP"
 )
 backup=(
-    "/etc/zextras/service-discover/carbonio-files-db.hcl"
+  "etc/zextras/service-discover/carbonio-files-db.hcl"
 )
 
 package() {
@@ -86,7 +79,6 @@ postinst() {
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
 }
-
 
 prerm() {
   if [ -d /run/systemd/system ]; then
