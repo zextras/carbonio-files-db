@@ -11,7 +11,7 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch=('x86_64')
-license=("spdx:AGPL-3.0-only")
+license=("AGPL-3.0-only")
 depends__apt=(
   "service-discover"
   "pending-setups"
