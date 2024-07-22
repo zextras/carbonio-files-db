@@ -99,6 +99,7 @@ pipeline {
             }
             steps {
                 unstash 'artifacts-deb'
+                unstash 'artifacts-rpm'
                 script {
                     def server = Artifactory.server 'zextras-artifactory'
                     def buildInfo
