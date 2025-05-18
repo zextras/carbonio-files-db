@@ -1,19 +1,16 @@
-// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+// SPDX-FileCopyrightText: 2023 Zextras <https://www.zextras.com>
 //
 // SPDX-License-Identifier: AGPL-3.0-only
 
 pipeline {
     agent {
         node {
-            label 'carbonio-agent-v1'
+            label 'base'
         }
     }
     environment {
         LC_ALL="C.UTF-8"
         jenkins_build="true"
-    }
-    parameters {
-        booleanParam defaultValue: false, description: 'Whether to upload the packages in playground repositories', name: 'PLAYGROUND'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
@@ -59,15 +56,15 @@ pipeline {
                         stage('Ubuntu') {
                             agent {
                                 node {
-                                    label 'yap-agent-ubuntu-20.04-v2'
+                                    label 'yap-ubuntu-20-v1'
                                 }
                             }
                             steps {
-                                dir('/tmp/staging') {
-                                  unstash 'binaries'
+                                container('yap') {
+                                    unstash 'binaries'
+                                    sh 'yap build ubuntu -ds . '
+                                    stash includes: 'artifacts/', name: 'artifacts-deb'
                                 }
-                                sh 'sudo yap build ubuntu /tmp/staging/'
-                                stash includes: 'artifacts/', name: 'artifacts-deb'
                             }
                             post {
                                 always {
@@ -78,19 +75,19 @@ pipeline {
                         stage('RHEL') {
                             agent {
                                 node {
-                                    label 'yap-agent-rocky-8-v2'
+                                    label 'yap-rocky-8-v1'
                                 }
                             }
                             steps {
-                                dir('/tmp/staging') {
-                                  unstash 'binaries'
+                                container('yap') {
+                                    unstash 'binaries'
+                                    sh 'yap build rocky -ds . '
+                                    stash includes: 'artifacts/*.rpm', name: 'artifacts-rpm'
                                 }
-                                sh 'sudo yap build rocky /tmp/staging/'
-                                stash includes: 'artifacts/x86_64/*.rpm', name: 'artifacts-rpm'
                             }
                             post {
                                 always {
-                                    archiveArtifacts artifacts: "artifacts/x86_64/*.rpm", fingerprint: true
+                                    archiveArtifacts artifacts: "artifacts/*.rpm", fingerprint: true
                                 }
                             }
                         }
@@ -119,52 +116,13 @@ pipeline {
                                 "props": "deb.distribution=focal;deb.distribution=jammy;deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-files-db)-(*).x86_64.rpm",
                                 "target": "centos8-devel/zextras/{1}/{1}-{2}.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
                             },
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-files-db)-(*).x86_64.rpm",
                                 "target": "rhel9-devel/zextras/{1}/{1}-{2}.x86_64.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
-                            }
-                        ]
-                    }"""
-                    server.upload spec: uploadSpec, buildInfo: buildInfo, failNoOp: false
-                }
-            }
-        }
-         stage('Upload To Playground') {
-            when {
-                anyOf {
-                    branch 'playground/*'
-                    expression { params.PLAYGROUND == true }
-                }
-            }
-            steps {
-                unstash 'artifacts-deb'
-                unstash 'artifacts-rpm'
-                script {
-                    def server = Artifactory.server 'zextras-artifactory'
-                    def buildInfo
-                    def uploadSpec
-
-                    buildInfo = Artifactory.newBuildInfo()
-                    uploadSpec = """{
-                        "files": [
-                            {
-                                "pattern": "artifacts/carbonio-files-db*.deb",
-                                "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=focal;deb.distribution=jammy;deb.distribution=noble;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                            },
-                            {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
-                                "target": "centos8-playground/zextras/{1}/{1}-{2}.x86_64.rpm",
-                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
-                            },
-                            {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
-                                "target": "rhel9-playground/zextras/{1}/{1}-{2}.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
                             }
                         ]
@@ -192,7 +150,7 @@ pipeline {
                     //ubuntu
                     buildInfo = Artifactory.newBuildInfo()
                     buildInfo.name += "-ubuntu"
-                    uploadSpec= """{
+                    uploadSpec = """{
                         "files": [
                             {
                                 "pattern": "artifacts/carbonio-files-db*.deb",
@@ -222,7 +180,7 @@ pipeline {
                     uploadSpec = """{
                         "files": [
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-files-db)-(*).x86_64.rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
                             }
@@ -249,7 +207,7 @@ pipeline {
                     uploadSpec = """{
                         "files": [
                             {
-                                "pattern": "artifacts/x86_64/(carbonio-files-db)-(*).x86_64.rpm",
+                                "pattern": "artifacts/(carbonio-files-db)-(*).x86_64.rpm",
                                 "target": "rhel9-rc/zextras/{1}/{1}-{2}.x86_64.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras;vcs.revision=${env.GIT_COMMIT}"
                             }
@@ -274,4 +232,3 @@ pipeline {
         }
     }
 }
-
