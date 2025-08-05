@@ -11,7 +11,6 @@ PartOf=carbonio.target
 
 [Service]
 User=carbonio-files-db
-Type=simple
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/files-db/service-discover/token \
     -admin-bind localhost:0 \
