@@ -10,19 +10,16 @@ After=network-online.target
 PartOf=carbonio.target
 
 [Service]
-Type=simple
+User=carbonio-files-db
 ExecStart=/usr/bin/consul connect envoy \
     -token-file /etc/carbonio/files-db/service-discover/token \
     -admin-bind localhost:0 \
     -sidecar-for carbonio-files-db
+ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=on-failure
 RestartSec=15
-User=carbonio-files-db
-KillMode=process
-KillSignal=SIGKILL
+KillSignal=SIGINT
 LimitNOFILE=65536
-TimeoutSec=120
-TimeoutStopSec=120
 
 [Install]
 WantedBy=carbonio.target
