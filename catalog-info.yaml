@@ -15,7 +15,7 @@ metadata:
     - envoy
     - backend
   links:
-    - url: https://github.com/Zextras/carbonio-files-db/blob/develop/README.md
+    - url: https://github.com/Zextras/carbonio-files-db/blob/devel/README.md
       title: README
 spec:
   type: service
