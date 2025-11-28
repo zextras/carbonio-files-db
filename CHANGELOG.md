@@ -1,12 +1,13 @@
-<!--
-SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
-
-SPDX-License-Identifier: AGPL-3.0-only
--->
-
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.18](https://github.com/zextras/carbonio-files-db/compare/v0.1.7...v0.1.18) (2025-11-28)
+
+
+### Bug Fixes
+
+* revert WantedBy for compatibility with older systems ([#19](https://github.com/zextras/carbonio-files-db/issues/19)) ([a437764](https://github.com/zextras/carbonio-files-db/commit/a4377647b517aae5dbe778d8b5d69b19fdde693a))
 
 ### [0.1.7](https://github.com/Zextras/carbonio-files-db/compare/v0.1.6...v0.1.7) (2024-09-11)
 
