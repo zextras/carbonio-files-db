@@ -95,7 +95,7 @@ pipeline {
             }
             when {
                 allOf {
-                    /*branch 'devel'*/
+                    branch 'devel'
                     expression { params.PREPARE_RELEASE == true }
                     not {
                         expression {
