@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     buildPackages([
-                        pkgbuildPath: 'PKGBUILD',
+                        pkgbuildPath: 'package/PKGBUILD',
                         buildStageConfig: [
                             rockySinglePkg: true,
                             ubuntuSinglePkg: true
