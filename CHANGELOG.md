@@ -1,3 +1,9 @@
+## [0.1.9](https://github.com/zextras/carbonio-files-db/compare/v0.1.8...v0.1.9) (2026-02-23)
+
+### Bug Fixes
+
+* force prepare release on devel ([#29](https://github.com/zextras/carbonio-files-db/issues/29)) ([809e000](https://github.com/zextras/carbonio-files-db/commit/809e0005b499119574f9210fa476d5a663c9f70a))
+
 ## [0.1.8](https://github.com/zextras/carbonio-files-db/compare/v0.1.7...v0.1.8) (2025-11-28)
 
 ### Bug Fixes
