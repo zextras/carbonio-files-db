@@ -29,12 +29,15 @@ ENTRYPOINT ["/bin/sh", "-c", "\
   echo '[sidecar] Waiting for consul agent...' && \
   until consul members >/dev/null 2>&1; do sleep 1; done && \
   echo '[sidecar] Consul agent ready.' && \
-  consul services register /consul/config/*.hcl && \
-  (carbonio-files-db setup || true) && \
   echo '[sidecar] Waiting for postgres...' && \
   until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT >/dev/null 2>&1; do sleep 1; done && \
-  echo '[sidecar] Postgres ready, running bootstrap...' && \
-  (carbonio-files-db-bootstrap $POSTGRES_USER $POSTGRES_HOST $POSTGRES_PORT || true) && \
+  until PGPASSWORD=$PGPASSWORD psql -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER -w -c 'SELECT 1' >/dev/null 2>&1; do sleep 1; done && \
+  echo '[sidecar] Postgres ready.' && \
+  consul services register /consul/config/*.hcl && \
+  echo '[sidecar] Running setup...' && \
+  carbonio-files-db setup && \
+  echo '[sidecar] Running bootstrap...' && \
+  (carbonio-files-db-bootstrap $POSTGRES_USER $POSTGRES_HOST || true) && \
   echo '[sidecar] Starting envoy for $SERVICE_NAME' && \
   exec consul connect envoy \
     -sidecar-for=$SERVICE_NAME \
