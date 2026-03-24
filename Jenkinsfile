@@ -116,6 +116,18 @@ pipeline {
             }
         }
 
+        stage('Publish docker images') {
+            steps {
+                dockerStage([
+                    dockerfile: 'docker/files-db-sidecar/Dockerfile',
+                    imageName: 'carbonio-files-db-sidecar',
+                    ocLabels: [
+                        title: 'Carbonio Files DB Sidecar',
+                    ]
+                ])
+            }
+        }
+
         stage('Tag for release') {
             when {
                 allOf {
