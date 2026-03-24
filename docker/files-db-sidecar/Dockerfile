@@ -35,7 +35,7 @@ ENTRYPOINT ["/bin/sh", "-c", "\
   echo '[sidecar] Postgres ready.' && \
   consul services register /consul/config/*.hcl && \
   echo '[sidecar] Running setup...' && \
-  carbonio-files-db setup && \
+  (carbonio-files-db setup || true) && \
   echo '[sidecar] Running bootstrap...' && \
   (carbonio-files-db-bootstrap $POSTGRES_USER $POSTGRES_HOST || true) && \
   echo '[sidecar] Starting envoy for $SERVICE_NAME' && \
