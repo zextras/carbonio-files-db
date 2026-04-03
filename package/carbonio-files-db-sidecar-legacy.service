@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+[Unit]
+Description=Carbonio Files DB Sidecar
+Documentation=https://docs.zextras.com/
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=carbonio-files-db
+ExecStart=/usr/bin/consul connect envoy \
+    -token-file /etc/carbonio/files-db/service-discover/token \
+    -admin-bind localhost:0 \
+    -sidecar-for carbonio-files-db
+ExecReload=/usr/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=15s
+KillSignal=SIGINT
+LimitNOFILE=65536
+
+# Hardening
+PrivateTmp=yes
+ProtectSystem=strict
+NoNewPrivileges=yes
+PrivateDevices=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+ProtectHostname=yes
+ProtectClock=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
