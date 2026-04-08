@@ -59,16 +59,11 @@ pipeline {
 
         stage('Build deb/rpm') {
             steps {
-                script {
-                    buildPackages([
-                        pkgbuildPath: 'package/PKGBUILD',
-                        buildStageConfig: [
-                            buildFlags: ' -ds ',
-                            rockySinglePkg: true,
-                            ubuntuSinglePkg: true
-                        ]
-                    ])
-                }
+                buildStage([
+                    buildFlags: ' -ds ',
+                    rockySinglePkg: true,
+                    ubuntuSinglePkg: true,
+                ])
             }
         }
 
