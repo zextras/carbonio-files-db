@@ -1,4 +1,4 @@
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:latest
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
 
 # psql is needed by the bootstrap script to create the database
 RUN apt-get update && apt-get install -y postgresql-client openssl && rm -rf /var/lib/apt/lists/*
