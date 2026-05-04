@@ -1,3 +1,9 @@
+## [0.2.0](https://github.com/zextras/carbonio-files-db/compare/v0.1.9...v0.2.0) (2026-05-04)
+
+### Features
+
+* systemd hardening and service-discover.target orchestration ([#39](https://github.com/zextras/carbonio-files-db/issues/39)) ([6684cca](https://github.com/zextras/carbonio-files-db/commit/6684ccaf6149f15051b892c537dff7f83245e1d8))
+
 ## [0.1.9](https://github.com/zextras/carbonio-files-db/compare/v0.1.8...v0.1.9) (2026-02-23)
 
 ### Bug Fixes
