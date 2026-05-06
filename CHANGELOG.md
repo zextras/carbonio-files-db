@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/zextras/carbonio-files-db/compare/v0.2.0...v0.2.1) (2026-05-06)
+
+### Bug Fixes
+
+* restore buildPackages() to fix pkgrel on tag builds ([#46](https://github.com/zextras/carbonio-files-db/issues/46)) ([6b9444b](https://github.com/zextras/carbonio-files-db/commit/6b9444b292e18a869eca3674bb78221dd86fc2b7))
+
 ## [0.2.0](https://github.com/zextras/carbonio-files-db/compare/v0.1.9...v0.2.0) (2026-05-04)
 
 ### Features
