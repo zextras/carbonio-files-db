@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@dt3-migration',
+    identifier: 'jenkins-lib-common@dt3-pipeline',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -24,4 +24,6 @@ dt3_pipeline(
         title: 'Carbonio Files DB Sidecar',
         description: 'Carbonio Files DB sidecar service',
     ]],
+    reuse: [projectType: 'CE'],
+    gitleaks: true,
 )
