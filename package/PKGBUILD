@@ -10,7 +10,7 @@ maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch=('x86_64')
+arch=('any')
 license=("AGPL-3.0-only")
 depends__apt=(
   "service-discover"
