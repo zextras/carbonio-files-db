@@ -13,6 +13,8 @@ PartOf=service-discover.target
 User=carbonio-files-db
 Type=notify
 NotifyAccess=all
+TimeoutStartSec=120
+Environment=ENVOY_READY_TIMEOUT=90
 ExecStart=/usr/bin/service-discover-wrapper.sh \
     -token-file /etc/carbonio/files-db/service-discover/token \
     -admin-bind localhost:0 \
