@@ -1,3 +1,14 @@
+## [0.3.0](https://github.com/zextras/carbonio-files-db/compare/v0.2.1...v0.3.0) (2026-05-25)
+
+### Features
+
+* **packaging:** use arch=('any') for architecture-independent package ([#50](https://github.com/zextras/carbonio-files-db/issues/50)) ([27c36e8](https://github.com/zextras/carbonio-files-db/commit/27c36e8782477c47eb54d08e3b5ffda1254efea8))
+
+### Bug Fixes
+
+* **deps:** add explicit service-discover-base dependency ([#53](https://github.com/zextras/carbonio-files-db/issues/53)) ([20c3384](https://github.com/zextras/carbonio-files-db/commit/20c33845a3dfca26d069b1d1dd101565398a4499))
+* **sidecar:** increase startup timeout for RHEL8 compatibility ([0841dbc](https://github.com/zextras/carbonio-files-db/commit/0841dbc786f3b144eea442dcab70c3cd74751f02))
+
 ## [0.2.1](https://github.com/zextras/carbonio-files-db/compare/v0.2.0...v0.2.1) (2026-05-06)
 
 ### Bug Fixes
