@@ -20,6 +20,7 @@ dt3_pipeline(
     docker: [[
         dockerfile: 'docker/files-db-sidecar/Dockerfile',
         imageName: 'carbonio-files-db-sidecar',
+        platforms: ['linux/amd64', 'linux/arm64'] as Set,
         title: 'Carbonio Files DB Sidecar',
         description: 'Carbonio Files DB sidecar service',
     ]],
