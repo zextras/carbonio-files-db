@@ -11,7 +11,7 @@
 # liblber-2.5, libsasl2, libreadline. Everything goes under /usr/lib (not /lib):
 # ubuntu jammy is usrmerged so /lib is a symlink to /usr/lib, and COPYing into
 # /lib/* fails on some buildkit versions ("cannot copy to non-directory").
-FROM --platform=$BUILDPLATFORM ubuntu:jammy AS pgclient
+FROM --platform=$BUILDPLATFORM ubuntu:resolute AS pgclient
 ARG TARGETARCH
 RUN set -eux; \
     case "$TARGETARCH" in \
