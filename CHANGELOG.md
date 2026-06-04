@@ -1,3 +1,9 @@
+## [0.4.0](https://github.com/zextras/carbonio-files-db/compare/v0.3.1...v0.4.0) (2026-06-04)
+
+### Features
+
+* **ci:** [IN-951] add arm64 platform to db sidecar (no-QEMU psql/openssl cross-download) ([#55](https://github.com/zextras/carbonio-files-db/issues/55)) ([1d4c86e](https://github.com/zextras/carbonio-files-db/commit/1d4c86e94ff98b895821eaea74161ad40d897685))
+
 ## [0.3.1](https://github.com/zextras/carbonio-files-db/compare/v0.3.0...v0.3.1) (2026-05-26)
 
 ## [0.3.0](https://github.com/zextras/carbonio-files-db/compare/v0.2.1...v0.3.0) (2026-05-25)
