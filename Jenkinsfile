@@ -25,5 +25,4 @@ dt3_pipeline(
         description: 'Carbonio Files DB sidecar service',
     ]],
     reuse: [projectType: 'CE'],
-    gitleaks: true,
 )
