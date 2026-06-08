@@ -16,6 +16,8 @@ dt3_pipeline(
     packaging: [
         pkgbuildPath: 'package/PKGBUILD',
         buildFlags: '-ds',
+        rockySinglePkg: false,
+        ubuntuSinglePkg: false,
     ],
     docker: [[
         dockerfile: 'docker/files-db-sidecar/Dockerfile',
