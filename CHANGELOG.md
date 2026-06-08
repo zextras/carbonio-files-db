@@ -1,3 +1,9 @@
+## [0.4.1](https://github.com/zextras/carbonio-files-db/compare/v0.4.0...v0.4.1) (2026-06-08)
+
+### Bug Fixes
+
+* **ci:** build packages for all distros ([#61](https://github.com/zextras/carbonio-files-db/issues/61)) ([e2601ec](https://github.com/zextras/carbonio-files-db/commit/e2601ecef7dc1b0fe94de7bc7a31c35351b4da7c))
+
 ## [0.4.0](https://github.com/zextras/carbonio-files-db/compare/v0.3.1...v0.4.0) (2026-06-04)
 
 ### Features
