@@ -15,6 +15,8 @@ dt3_pipeline(
     repoName: 'carbonio-files-db',
     packaging: [
         buildFlags: '-ds',
+        rockySinglePkg: false,
+        ubuntuSinglePkg: false,
     ],
     docker: [[
         dockerfile: 'docker/files-db-sidecar/Dockerfile',
