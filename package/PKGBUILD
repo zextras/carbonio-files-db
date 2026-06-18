@@ -45,8 +45,8 @@ sha256sums=(
   '1e2c82e0ce0cf2a00ca1304a482e3de9d1533250ca7c7df68bd0021296fd73de'
   '7dca6f4aed5711385e48067b3648775668fc669b0ac4d60f94fbeb0e0b7f56a0'
   '64545b36f49d746991390031453823c44a069dae90052593d4df225cb4cf72c2'
-  'a342ed40a7a0f27f03b53d08c327d6867ad982aac9086533a644c5441a3fbf35'
-  '1d08424f9a4a3d6c31a7d7a19020a7f828c30bc4f8305521d7b89479483c1d7f'
+  '53f1817b142335d3c8861dd7acdf542de8973ff585419323cabfc4a9395bd4f5'
+  '0c38a981898c47da7fe08629a216e705929f7f595fa24e2d31093f794ce30930'
   'b4483a87a3a1133469d8990d95212861934669415aa78b98053a9945306f09f7'
   'b8cfcc7e1785a1bec5dfa7786fcfff2430a81478158ba24692fef9af9305a639'
   'eaaad0b356e83792a3dabb87d6e88c6e2e56143e1af97fddbb32d2fb917d86fe'
@@ -89,10 +89,10 @@ package__rocky_8() { _package_legacy; }
 package__ubuntu_jammy() { _package_legacy; }
 
 postinst() {
-  getent group 'carbonio-files-db' >/dev/null \
-    || groupadd -r 'carbonio-files-db'
-  getent passwd 'carbonio-files-db' >/dev/null \
-    || useradd -r -M -g 'carbonio-files-db' -s /sbin/nologin 'carbonio-files-db'
+  getent group 'carbonio-files-db' >/dev/null ||
+    groupadd -r 'carbonio-files-db'
+  getent passwd 'carbonio-files-db' >/dev/null ||
+    useradd -r -M -g 'carbonio-files-db' -s /sbin/nologin 'carbonio-files-db'
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
