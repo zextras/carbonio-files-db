@@ -1,0 +1,28 @@
+version = 1
+SPDX-PackageName = "carbonio-files-db"
+SPDX-PackageSupplier = "Zextras <packages@zextras.com>"
+SPDX-PackageDownloadLocation = "https://github.com/Zextras/carbonio-files-db"
+
+[[annotations]]
+path = ".github/CODEOWNERS"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Zextras <https://www.zextras.com>"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = [".github/renovate.json", ".releaserc.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Zextras <https://www.zextras.com>"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = ["COPYING", "THIRDPARTIES"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Zextras <https://www.zextras.com>"
+SPDX-License-Identifier = "AGPL-3.0-only"
+
+[[annotations]]
+path = "CHANGELOG.md"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Zextras <https://www.zextras.com>"
+SPDX-License-Identifier = "AGPL-3.0-only"

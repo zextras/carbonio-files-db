@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 # psql + openssl are needed by the bootstrap/setup scripts. The carbonio-sidecar
 # base is ubuntu jammy; installing postgresql-client/openssl with apt in the
 # final stage runs target-arch maintainer scripts (no QEMU => exec format error
