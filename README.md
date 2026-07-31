@@ -44,7 +44,7 @@ or via yum:
 
  ```bash
 sudo yum install carbonio-files-db
-```   
+```  
 
 ### Configuration
 
