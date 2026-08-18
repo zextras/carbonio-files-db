@@ -2,5 +2,25 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>zextras/infra-renovate-config"
+  ],
+  "separateMultipleMajor": false,
+  "vulnerabilityAlerts": {
+    "groupName": null
+  },
+  "packageRules": [
+    {
+      "description": "Group all patch-level updates into a single PR",
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "groupName": "all patch updates"
+    },
+    {
+      "description": "Group all minor-level updates into a single PR",
+      "matchUpdateTypes": [
+        "minor"
+      ],
+      "groupName": "all minor updates"
+    }
   ]
 }

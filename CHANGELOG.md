@@ -1,3 +1,35 @@
+## [0.5.10](https://github.com/zextras/carbonio-files-db/compare/v0.5.9...v0.5.10) (2026-08-14)
+
+## [0.5.9](https://github.com/zextras/carbonio-files-db/compare/v0.5.8...v0.5.9) (2026-08-13)
+
+## [0.5.8](https://github.com/zextras/carbonio-files-db/compare/v0.5.7...v0.5.8) (2026-08-12)
+
+## [0.5.7](https://github.com/zextras/carbonio-files-db/compare/v0.5.6...v0.5.7) (2026-08-07)
+
+## [0.5.6](https://github.com/zextras/carbonio-files-db/compare/v0.5.5...v0.5.6) (2026-08-06)
+
+## [0.5.5](https://github.com/zextras/carbonio-files-db/compare/v0.5.4...v0.5.5) (2026-08-04)
+
+## [0.5.4](https://github.com/zextras/carbonio-files-db/compare/v0.5.3...v0.5.4) (2026-08-03)
+
+## [0.5.3](https://github.com/zextras/carbonio-files-db/compare/v0.5.2...v0.5.3) (2026-07-31)
+
+## [0.5.2](https://github.com/zextras/carbonio-files-db/compare/v0.5.1...v0.5.2) (2026-07-30)
+
+## [0.5.1](https://github.com/zextras/carbonio-files-db/compare/v0.5.0...v0.5.1) (2026-07-10)
+
+## [0.5.0](https://github.com/zextras/carbonio-files-db/compare/v0.4.2...v0.5.0) (2026-06-23)
+
+### Features
+
+* migrate to dt3-pipeline ([#63](https://github.com/zextras/carbonio-files-db/issues/63)) ([e24389e](https://github.com/zextras/carbonio-files-db/commit/e24389e5aca910b434eaddef242093e6df8d36b6))
+
+## [0.4.1](https://github.com/zextras/carbonio-files-db/compare/v0.4.0...v0.4.1) (2026-06-08)
+
+### Bug Fixes
+
+* **ci:** build packages for all distros ([#61](https://github.com/zextras/carbonio-files-db/issues/61)) ([e2601ec](https://github.com/zextras/carbonio-files-db/commit/e2601ecef7dc1b0fe94de7bc7a31c35351b4da7c))
+
 ## [0.4.0](https://github.com/zextras/carbonio-files-db/compare/v0.3.1...v0.4.0) (2026-06-04)
 
 ### Features
