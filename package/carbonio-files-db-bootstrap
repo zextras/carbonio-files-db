@@ -96,16 +96,15 @@ echo "Check postgres connection: $(check_postgres_connection)"
 # Check if the database exists
 # ============================
 set +e
-CURRENT_VERSION=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}" -tAq 2>/dev/null<<EOF
-SELECT version FROM DB_INFO LIMIT 1;
+QUERY_RESULT=$(psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" "${DATABASE_NAME}" -tAq 2>/dev/null<<EOF
+SELECT 1 FROM pg_database WHERE datname = '${DATABASE_NAME}';
 EOF
 )
 
 PSQL_EXIT_CODE="$?"
 
-if [ "$PSQL_EXIT_CODE" == "0" ]; then
-  echo "Current version is: ${CURRENT_VERSION}."
-  echo "Database already initialized! Quitting"
+if [ "$PSQL_EXIT_CODE" == "0" ] && [ "$QUERY_RESULT" == "1" ]; then
+  echo "Database exists!"
   exit 0
 fi
 
@@ -118,9 +117,9 @@ set -e
 #  2. create user and database
 # =================================
 
-save_credential_on_consul_if_not_exist "db-name" $DATABASE_NAME &>/dev/null
-save_credential_on_consul_if_not_exist "db-username" $DATABASE_USERNAME &>/dev/null
-DATABASE_PASSWORD=$(save_credential_on_consul_if_not_exist "db-password" "$(openssl rand -hex 16 | tr -d '\n')")
+save_credential_on_consul_if_not_exist "database/credentials/db-name" $DATABASE_NAME &>/dev/null
+save_credential_on_consul_if_not_exist "database/credentials/db-username" $DATABASE_USERNAME &>/dev/null
+DATABASE_PASSWORD=$(save_credential_on_consul_if_not_exist "database/credentials/db-password" "$(openssl rand -hex 16 | tr -d '\n')")
 
 psql -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${ROOT_DB_USERNAME}" "${NOT_ASK_FOR_PGPASSWORD}" <<EOF
 CREATE USER "${DATABASE_USERNAME}" WITH PASSWORD  '${DATABASE_PASSWORD}';
