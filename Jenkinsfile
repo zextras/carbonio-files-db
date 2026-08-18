@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@dt3-pipeline',
+    identifier: 'jenkins-lib-common@v4.7.3',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -15,6 +15,8 @@ dt3_pipeline(
     repoName: 'carbonio-files-db',
     packaging: [
         buildFlags: '-ds',
+        rockySinglePkg: false,
+        ubuntuSinglePkg: false,
     ],
     docker: [[
         dockerfile: 'docker/files-db-sidecar/Dockerfile',
