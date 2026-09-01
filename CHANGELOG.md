@@ -1,3 +1,9 @@
+## [0.6.6](https://github.com/zextras/carbonio-files-db/compare/v0.6.5...v0.6.6) (2026-09-01)
+
+### Bug Fixes
+
+* **release:** update semantic-release branch to main ([#85](https://github.com/zextras/carbonio-files-db/issues/85)) ([38fae54](https://github.com/zextras/carbonio-files-db/commit/38fae54f9256738951efe0edfa41e0916945c219))
+
 ## [0.6.5](https://github.com/zextras/carbonio-files-db/compare/v0.6.4...v0.6.5) (2026-08-27)
 
 ## [0.6.4](https://github.com/zextras/carbonio-files-db/compare/v0.6.3...v0.6.4) (2026-08-26)
