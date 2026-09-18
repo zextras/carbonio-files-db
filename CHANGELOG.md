@@ -1,3 +1,5 @@
+## [0.6.14](https://github.com/zextras/carbonio-files-db/compare/v0.6.13...v0.6.14) (2026-09-18)
+
 ## [0.6.13](https://github.com/zextras/carbonio-files-db/compare/v0.6.12...v0.6.13) (2026-09-16)
 
 ## [0.6.12](https://github.com/zextras/carbonio-files-db/compare/v0.6.11...v0.6.12) (2026-09-11)
