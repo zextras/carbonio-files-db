@@ -1,3 +1,9 @@
+## [0.6.24](https://github.com/zextras/carbonio-files-db/compare/v0.6.23...v0.6.24) (2026-10-16)
+
+### Bug Fixes
+
+* **ci:** replace mapfile in checksum-verify for macOS bash 3.2 ([#116](https://github.com/zextras/carbonio-files-db/issues/116)) ([822fa8a](https://github.com/zextras/carbonio-files-db/commit/822fa8a6563dec9b0fd87e3a82617e433ea8f6f6)), closes [jenkins-lib-common#216](https://github.com/zextras/jenkins-lib-common/issues/216)
+
 ## [0.6.23](https://github.com/zextras/carbonio-files-db/compare/v0.6.22...v0.6.23) (2026-10-15)
 
 ## [0.6.22](https://github.com/zextras/carbonio-files-db/compare/v0.6.21...v0.6.22) (2026-10-13)
