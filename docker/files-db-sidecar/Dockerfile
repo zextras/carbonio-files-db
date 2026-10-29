@@ -42,7 +42,7 @@ RUN set -eux; \
     cp -a /x/usr/lib/${TRIPLET}/libsasl2.so.*       "/out/usr/lib/${TRIPLET}/"; \
     cp -a /x/lib/${TRIPLET}/libreadline.so.*        "/out/usr/lib/${TRIPLET}/"
 
-FROM registry.dev.zextras.com/dev/carbonio-sidecar:devel
+FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
 # psql + pg_isready + openssl + their not-already-present shared libs
 # (arch-matched, cross-downloaded above). No target-arch RUN => QEMU-free.
