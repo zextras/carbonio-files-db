@@ -46,17 +46,17 @@ consul config write /etc/carbonio/files-db/service-discover/service-protocol.jso
 # Allow other services to contact this service
 consul config write /etc/carbonio/files-db/service-discover/intentions.json
 
-if [[ ! -f "/etc/carbonio/files-db/service-discover/token" ]]; then
-    # Create the token
-    consul acl token create -format json -policy-name "${POLICY_NAME}" -description "Token for carbonio-files-db/$(hostname -A)" |
-      jq -r '.SecretID' > /etc/carbonio/files-db/service-discover/token;
-    chown carbonio-files-db:carbonio-files-db /etc/carbonio/files-db/service-discover/token
-    chmod 0600 /etc/carbonio/files-db/service-discover/token
-fi
+service-discover service-token ensure --service carbonio-files-db --policy "${POLICY_NAME}" \
+  --token-file /etc/carbonio/files-db/service-discover/token --owner carbonio-files-db || {
+  echo "Setup failed: cannot ensure service token"
+  exit 1
+}
 
 consul reload
 
+systemctl restart carbonio-files-db-sidecar.service
+
+service-discover service-token prune-legacy --service carbonio-files-db --policy "${POLICY_NAME}"
+
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
-
-systemctl restart carbonio-files-db-sidecar.service
