@@ -1,3 +1,9 @@
+## [0.6.30](https://github.com/zextras/carbonio-files-db/compare/v0.6.29...v0.6.30) (2026-11-05)
+
+### Bug Fixes
+
+* **setup:** reuse a deterministic Consul token per node - CO-3612 ([#121](https://github.com/zextras/carbonio-files-db/issues/121)) ([b64a66b](https://github.com/zextras/carbonio-files-db/commit/b64a66ba1efa6f91ac2eaa25c9eec7eccd1aea65))
+
 ## [0.6.29](https://github.com/zextras/carbonio-files-db/compare/v0.6.28...v0.6.29) (2026-11-01)
 
 ## [0.6.28](https://github.com/zextras/carbonio-files-db/compare/v0.6.27...v0.6.28) (2026-10-29)
