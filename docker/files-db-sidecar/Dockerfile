@@ -44,6 +44,8 @@ RUN set -eux; \
 
 FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
+RUN useradd -r -U carbonio-files-db
+
 # psql + pg_isready + openssl + their not-already-present shared libs
 # (arch-matched, cross-downloaded above). No target-arch RUN => QEMU-free.
 COPY --from=pgclient /out /
