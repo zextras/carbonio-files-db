@@ -1,3 +1,9 @@
+## [0.6.31](https://github.com/zextras/carbonio-files-db/compare/v0.6.30...v0.6.31) (2026-11-10)
+
+### Bug Fixes
+
+* **docker:** create the files-db sidecar system user ([#126](https://github.com/zextras/carbonio-files-db/issues/126)) ([7130fa9](https://github.com/zextras/carbonio-files-db/commit/7130fa90ed6ee035d47a4dd125dcbf50563d7293)), closes [carbonio-ws-collaboration#326](https://github.com/zextras/carbonio-ws-collaboration/issues/326)
+
 ## [0.6.30](https://github.com/zextras/carbonio-files-db/compare/v0.6.29...v0.6.30) (2026-11-05)
 
 ### Bug Fixes
