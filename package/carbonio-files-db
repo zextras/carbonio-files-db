@@ -46,8 +46,13 @@ consul config write /etc/carbonio/files-db/service-discover/service-protocol.jso
 # Allow other services to contact this service
 consul config write /etc/carbonio/files-db/service-discover/intentions.json
 
+token_owner=()
+if id -u carbonio-files-db >/dev/null 2>&1; then
+  token_owner=(--owner carbonio-files-db)
+fi
+
 service-discover service-token ensure --service carbonio-files-db --policy "${POLICY_NAME}" \
-  --token-file /etc/carbonio/files-db/service-discover/token --owner carbonio-files-db || {
+  --token-file /etc/carbonio/files-db/service-discover/token "${token_owner[@]}" || {
   echo "Setup failed: cannot ensure service token"
   exit 1
 }
