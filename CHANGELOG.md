@@ -1,3 +1,5 @@
+## [0.6.32](https://github.com/zextras/carbonio-files-db/compare/v0.6.31...v0.6.32) (2026-11-13)
+
 ## [0.6.31](https://github.com/zextras/carbonio-files-db/compare/v0.6.30...v0.6.31) (2026-11-10)
 
 ### Bug Fixes
