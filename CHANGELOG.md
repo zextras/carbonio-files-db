@@ -1,3 +1,9 @@
+## [0.6.33](https://github.com/zextras/carbonio-files-db/compare/v0.6.32...v0.6.33) (2026-11-14)
+
+### Bug Fixes
+
+* fail the bootstrap when Consul KV can't be written (CO-4748) ([#128](https://github.com/zextras/carbonio-files-db/issues/128)) ([421d33f](https://github.com/zextras/carbonio-files-db/commit/421d33f2af77ec1bf888dad7cf00be6cbdb4fc4d))
+
 ## [0.6.32](https://github.com/zextras/carbonio-files-db/compare/v0.6.31...v0.6.32) (2026-11-13)
 
 ## [0.6.31](https://github.com/zextras/carbonio-files-db/compare/v0.6.30...v0.6.31) (2026-11-10)
