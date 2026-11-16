@@ -9,6 +9,11 @@ Requires=network-online.target
 After=network-online.target service-discover.service
 PartOf=service-discover.target
 
+# The token is written by the pending setup ("carbonio-files-db setup") once
+# Consul is bootstrapped. Without it the sidecar cannot start: skip it
+# instead of failing every 15 s and holding up units ordered after it.
+ConditionPathExists=/etc/carbonio/files-db/service-discover/token
+
 [Service]
 User=carbonio-files-db
 Type=notify
