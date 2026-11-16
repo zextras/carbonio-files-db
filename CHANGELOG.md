@@ -1,3 +1,9 @@
+## [0.6.34](https://github.com/zextras/carbonio-files-db/compare/v0.6.33...v0.6.34) (2026-11-16)
+
+### Bug Fixes
+
+* [CO-3502] skip the files-db sidecar until its token exists ([#129](https://github.com/zextras/carbonio-files-db/issues/129)) ([f86163b](https://github.com/zextras/carbonio-files-db/commit/f86163b7c0400dabf2a8242764c1111b4680f449))
+
 ## [0.6.33](https://github.com/zextras/carbonio-files-db/compare/v0.6.32...v0.6.33) (2026-11-14)
 
 ### Bug Fixes
