@@ -98,26 +98,10 @@ postinst() {
     systemctl enable carbonio-files-db-sidecar.service >/dev/null 2>&1 || :
   fi
 
-  if [ "$1" = "configure" ]; then
-    env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-      /etc/zextras/service-discover/carbonio-files-db.env \
-      /etc/zextras/service-discover/templates/carbonio-files-db-template.hcl \
-      /etc/zextras/service-discover/carbonio-files-db.hcl > /dev/null \
-      || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-files-db.hcl, run carbonio-files-db setup"
-  fi
-
   echo "======================================================"
   echo "Carbonio Files DB installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
-}
-
-posttrans() {
-  env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
-    /etc/zextras/service-discover/carbonio-files-db.env \
-    /etc/zextras/service-discover/templates/carbonio-files-db-template.hcl \
-    /etc/zextras/service-discover/carbonio-files-db.hcl > /dev/null \
-    || echo "WARNING: cannot render /etc/zextras/service-discover/carbonio-files-db.hcl, run carbonio-files-db setup"
 }
 
 prerm() {
