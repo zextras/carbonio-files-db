@@ -14,6 +14,14 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
+if command -v carbonio-files-db-hcl > /dev/null; then
+  carbonio-files-db-hcl migrate || :
+  if ! carbonio-files-db-hcl render; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-files-db.hcl; leaving pending-setup to be retried."
+    exit 1
+  fi
+fi
+
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password multiple times
@@ -60,3 +68,8 @@ service-discover service-token prune-legacy --service carbonio-files-db --policy
 
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
+rc=$?
+if command -v carbonio-files-db-hcl > /dev/null; then
+  carbonio-files-db-hcl show || :
+fi
+exit "${rc}"

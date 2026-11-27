@@ -15,6 +15,7 @@ license=("AGPL-3.0-only")
 depends__apt=(
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "pending-setups"
   "carbonio-core"
   "postgresql-client"
@@ -23,6 +24,7 @@ depends__apt=(
 depends__yum=(
   "service-discover"
   "service-discover-base"
+  "service-discover-template"
   "pending-setups"
   "carbonio-core"
   "postgresql"
@@ -31,7 +33,8 @@ depends__yum=(
 source=(
   "111-carbonio-files-db-setup.sh"
   "carbonio-files-db"
-  "carbonio-files-db.hcl"
+  "carbonio-files-db-template.hcl"
+  "carbonio-files-db-hcl"
   "carbonio-files-db-bootstrap"
   "carbonio-files-db-sidecar.service"
   "carbonio-files-db-sidecar-legacy.service"
@@ -42,8 +45,9 @@ source=(
 
 sha256sums=(
   'de44c46a8b369abb7c2817d7cf1a99dd607c56ad09eab5ef76bdd7bb0c860dd1'
-  '5ccbddd4430045b7322aa931a57bca233d98971d6756235e9158d13e91a00b48'
-  '7dca6f4aed5711385e48067b3648775668fc669b0ac4d60f94fbeb0e0b7f56a0'
+  'd0b6d78918a0dc552fc6bd7e6a38b96dc23f53a473c6f369a306d52849277c1b'
+  'a851a1f679461914211d82a88054572e710d35048e82f5c91b81a766ebbf7ca8'
+  'b7910cba5c5532f2501b46912d0f0038dc8a2b33ebbf37c532cf372a3631d8b0'
   '60b77cd899736aaa1adf7e182149dd5d141d5244bb3cc1e79f036474e694c4da'
   '525adc6a31715ba9c844bb37d1597a0676895190f36ef39975ad92665d6239aa'
   'a9dc49f8eb55a0c4faaf8e375b05a0911ff5459c1fdd34d2470c3d59b7dbeb7b'
@@ -57,8 +61,10 @@ _package_common() {
     "${pkgdir}/etc/zextras/pending-setups.d/111-carbonio-files-db-setup.sh"
   install -Dm755 "${srcdir}/carbonio-files-db" \
     "${pkgdir}/usr/bin/carbonio-files-db"
-  install -Dm644 "${srcdir}/carbonio-files-db.hcl" \
-    "${pkgdir}/etc/zextras/service-discover/carbonio-files-db.hcl"
+  install -Dm644 "${srcdir}/carbonio-files-db-template.hcl" \
+    "${pkgdir}/etc/zextras/service-discover/templates/carbonio-files-db-template.hcl"
+  install -Dm755 "${srcdir}/carbonio-files-db-hcl" \
+    "${pkgdir}/usr/bin/carbonio-files-db-hcl"
   install -Dm755 "${srcdir}/carbonio-files-db-bootstrap" \
     "${pkgdir}/usr/bin/carbonio-files-db-bootstrap"
   install -Dm644 "${srcdir}/intentions.json" \
@@ -96,10 +102,20 @@ postinst() {
     systemctl enable carbonio-files-db-sidecar.service >/dev/null 2>&1 || :
   fi
 
+  if [ "$1" = "configure" ]; then
+    carbonio-files-db-hcl migrate || :
+    carbonio-files-db-hcl render || echo "WARNING: hcl render failed, run carbonio-files-db setup"
+  fi
+
   echo "======================================================"
   echo "Carbonio Files DB installed successfully!"
   echo "You must run pending-setups to configure it correctly."
   echo "======================================================"
+}
+
+posttrans() {
+  carbonio-files-db-hcl migrate || :
+  carbonio-files-db-hcl render || echo "WARNING: hcl render failed, run carbonio-files-db setup"
 }
 
 prerm() {
@@ -112,6 +128,10 @@ postrm() {
   rm -Rf /etc/carbonio/files-db/
   rm -f /etc/zextras/pending-setups.d/111-carbonio-files-db-setup.sh
   rm -f /etc/zextras/pending-setups.d/done/111-carbonio-files-db-setup.sh
+  rm -f /etc/zextras/service-discover/carbonio-files-db.hcl
+  if [ "$1" = "purge" ]; then
+    rm -f /etc/zextras/service-discover/carbonio-files-db.env /etc/zextras/service-discover/carbonio-files-db.hcl.bak
+  fi
 
   if [ -d /run/systemd/system ]; then
     systemctl daemon-reload >/dev/null 2>&1 || :
