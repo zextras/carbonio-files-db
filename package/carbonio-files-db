@@ -14,6 +14,17 @@ if [[ "$1" != "setup" ]]; then
   exit 1;
 fi
 
+if [ -f /etc/zextras/service-discover/templates/carbonio-files-db-template.hcl ]; then
+  # shellcheck disable=SC2016
+  if ! env -i PATH=/usr/bin:/bin bash -c 'set -a; [ -r "$1" ] && . "$1"; exec consul-template -once -template "$2:$3"' _ \
+    /etc/zextras/service-discover/carbonio-files-db.env \
+    /etc/zextras/service-discover/templates/carbonio-files-db-template.hcl \
+    /etc/zextras/service-discover/carbonio-files-db.hcl > /dev/null; then
+    echo "Cannot render /etc/zextras/service-discover/carbonio-files-db.hcl; leaving pending-setup to be retried."
+    exit 1
+  fi
+fi
+
 # Decrypt the bootstrap token, asking the password to the sys admin
 # --setup check for SETUP_CONSUL_TOKEN env. variable and uses it
 # to avoid re-asking for the password multiple times
@@ -60,3 +71,18 @@ service-discover service-token prune-legacy --service carbonio-files-db --policy
 
 # Limit token visibility as much as possible
 export -n CONSUL_HTTP_TOKEN
+rc=$?
+cat << 'EOF'
+
+Sidecar Config (overridable by /etc/zextras/service-discover/carbonio-files-db.env, apply with carbonio-files-db setup)
+
+┌────────────────┬───────────┐
+│ Key            │ Default   │
+├────────────────┼───────────┤
+│ DB_ADDRESS     │ 127.0.0.1 │
+│ CHECK_TIMEOUT  │ 1s        │
+│ CHECK_INTERVAL │ 5s        │
+└────────────────┴───────────┘
+
+EOF
+exit "${rc}"
