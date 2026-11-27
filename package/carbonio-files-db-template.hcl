@@ -10,12 +10,16 @@
 
 services {
   check {
-    tcp      = "127.0.0.1:5432"
+    tcp      = "{{ or (env "DB_ADDRESS") "127.0.0.1" }}:5432"
     timeout  = "{{ or (env "CHECK_TIMEOUT") "1s" }}"
     interval = "{{ or (env "CHECK_INTERVAL") "5s" }}"
   }
   connect {
-    sidecar_service {}
+    sidecar_service {
+      proxy {
+        local_service_address = "{{ or (env "DB_ADDRESS") "127.0.0.1" }}"
+      }
+    }
   }
   name    = "carbonio-files-db"
   port    = 5432
