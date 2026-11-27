@@ -15,7 +15,6 @@ if [[ "$1" != "setup" ]]; then
 fi
 
 if command -v carbonio-files-db-hcl > /dev/null; then
-  carbonio-files-db-hcl migrate || :
   if ! carbonio-files-db-hcl render; then
     echo "Cannot render /etc/zextras/service-discover/carbonio-files-db.hcl; leaving pending-setup to be retried."
     exit 1
