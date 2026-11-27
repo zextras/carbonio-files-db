@@ -15,7 +15,6 @@ license=("AGPL-3.0-only")
 depends__apt=(
   "service-discover"
   "service-discover-base"
-  "service-discover-template"
   "pending-setups"
   "carbonio-core"
   "postgresql-client"
@@ -24,7 +23,6 @@ depends__apt=(
 depends__yum=(
   "service-discover"
   "service-discover-base"
-  "service-discover-template"
   "pending-setups"
   "carbonio-core"
   "postgresql"
