@@ -42,11 +42,15 @@ RUN set -eux; \
     cp -a /x/usr/lib/${TRIPLET}/libsasl2.so.*       "/out/usr/lib/${TRIPLET}/"; \
     cp -a /x/lib/${TRIPLET}/libreadline.so.*        "/out/usr/lib/${TRIPLET}/"
 
-FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3.20 AS hcl
-COPY package/carbonio-files-db-template.hcl /carbonio-files-db-template.hcl
-RUN sed -E 's/\{\{ or \(env "[A-Z0-9_]+"\) "([^"]*)" \}\}/\1/g' \
-    /carbonio-files-db-template.hcl > /carbonio-files-db.hcl \
-    && ! grep -q '{{' /carbonio-files-db.hcl
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3.23 AS consul-template
+ARG TARGETARCH
+ARG CONSUL_TEMPLATE_VERSION=0.42.1
+RUN apk add --no-cache curl unzip && \
+    curl -fsSL -o /tmp/ct.zip "https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_linux_${TARGETARCH}.zip" && \
+    curl -fsSL -o /tmp/ct.sums "https://releases.hashicorp.com/consul-template/${CONSUL_TEMPLATE_VERSION}/consul-template_${CONSUL_TEMPLATE_VERSION}_SHA256SUMS" && \
+    echo "$(grep "_linux_${TARGETARCH}.zip" /tmp/ct.sums | cut -d' ' -f1)  /tmp/ct.zip" | sha256sum -c - && \
+    unzip -j /tmp/ct.zip consul-template -d /out && \
+    chmod +x /out/consul-template
 
 FROM registry.dev.zextras.com/dev/carbonio-sidecar:main
 
@@ -57,7 +61,8 @@ RUN useradd -r -U carbonio-files-db
 COPY --from=pgclient /out /
 
 # Service registration
-COPY --from=hcl /carbonio-files-db.hcl /consul/config/
+COPY --from=consul-template /out/consul-template /usr/local/bin/consul-template
+COPY package/carbonio-files-db-template.hcl /consul/templates/carbonio-files-db-template.hcl
 
 # Setup files at the path the setup script expects
 COPY package/service-protocol.json /etc/carbonio/files-db/service-discover/
@@ -77,6 +82,7 @@ ENV POSTGRES_HOST=localhost
 ENV POSTGRES_PORT=5432
 
 ENTRYPOINT ["/bin/sh", "-c", "\
+  consul-template -once -template '/consul/templates/carbonio-files-db-template.hcl:/consul/config/carbonio-files-db.hcl' && \
   echo '[sidecar] Waiting for consul agent...' && \
   until consul members >/dev/null 2>&1; do sleep 1; done && \
   echo '[sidecar] Consul agent ready.' && \
